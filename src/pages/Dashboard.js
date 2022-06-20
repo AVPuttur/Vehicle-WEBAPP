@@ -8,42 +8,18 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faSquareParking } from '@fortawesome/free-solid-svg-icons'
 import { Excel } from "antd-table-saveas-excel";
 import axios from 'axios';
-import { useNavigate } from "react-router-dom";
-//const saved = localStorage.getItem(key);
-
+import { useNavigate, Link } from "react-router-dom";
 
 const Dashboard = () => {
+  const navigate = useNavigate();
   const [users, setUsers] = useState([]);
   const [vehicles, setVehicles] = useState([]);
 
-  // const data = [
-  //   {
-  //     key: '1',
-  //     name: 'John Brown',
-  //     age: 32,
-  //     address: 'New York No. 1 Lake Park',
-  //   },
-  //   {
-  //     key: '2',
-  //     name: 'Joe Black',
-  //     age: 42,
-  //     address: 'London No. 1 Lake Park',
-  //   },
-  //   {
-  //     key: '3',
-  //     name: 'Jim Green',
-  //     age: 32,
-  //     address: 'Sidney No. 1 Lake Park',
-  //   },
-  //   {
-  //     key: '4',
-  //     name: 'Jim Red',
-  //     age: 32,
-  //     address: 'London No. 2 Lake Park',
-  //   },
-  // ];
+  const VURL = "https://angry-guests-call-102-113-230-160.loca.lt/api/vehicle";
+  const UURL = "https://angry-guests-call-102-113-230-160.loca.lt/api/user";
 
   useEffect(() => {
+    authenticateCheck();
     getUsers();
     getVehicle();
   }, []);
@@ -52,7 +28,7 @@ const Dashboard = () => {
   const vehicleData = [];
   
   const getUsers = () => {
-      axios.get('https://shaky-wolves-clap-102-112-2-52.loca.lt/api/user')
+      axios.get(UURL)
         .then(response => setUsers(response.data))
         .catch(error => {
             console.error('There was an error!', error);
@@ -60,7 +36,7 @@ const Dashboard = () => {
   }
 
   const getVehicle = () => {
-    axios.get('https://shaky-wolves-clap-102-112-2-52.loca.lt/api/vehicle')
+    axios.get(VURL)
       .then(response => setVehicles(response.data))
       .catch(error => {
           console.error('There was an error!', error);
@@ -102,8 +78,7 @@ const Dashboard = () => {
 
   const handleDelete = (key) => {
     console.log("KEY", key);
-    window.location.reload();
-    axios.delete("https://shaky-wolves-clap-102-112-2-52.loca.lt/api/user/" + key)
+    axios.delete(UURL + key)
       .then(response => {
         console.log(response);
         this.getUsers();
@@ -111,7 +86,30 @@ const Dashboard = () => {
       .catch(err => {
         console.log(err);
       });
+      window.location.reload();
   };
+
+  const authenticateCheck = () => {
+    const token = localStorage.getItem("accessToken");
+    if(token == null) {
+      navigate("/login");
+    }
+  }
+
+  const handleUpdateUser = (e) => {
+    console.log(e)
+    localStorage.setItem("uname", e.name);
+    navigate("/edit-user");
+    /*this.setU({
+      currentId: e.id,
+      editing: true,
+      newUser: {
+        name: e.name,
+        //age: e.age
+      }
+    });*/
+  };
+
 
     const [searchText, setSearchText] = useState('');
     const [searchedColumn, setSearchedColumn] = useState('');
@@ -245,9 +243,15 @@ const Dashboard = () => {
           dataIndex: 'operation',
           render: (_, record) =>
             userData.length >= 1 ? (
+              <span>
               <Popconfirm title="Sure to delete?" onConfirm={() => handleDelete(record.name)}>
-                <a>Delete</a>
+              <a>Delete</a>
+              </Popconfirm> &nbsp;
+              |&nbsp;&nbsp;
+              <Popconfirm title="Sure to edit?" onConfirm={() => handleUpdateUser(record)}>
+              <a>Edit</a>
               </Popconfirm>
+              </span>
             ) : null,
         },
       ];
@@ -310,13 +314,13 @@ const Dashboard = () => {
                 <div className="collapse navbar-collapse" id="navbarText">
                 <ul className="navbar-nav me-auto mb-2 mb-lg-0">
                     <li className="nav-item">
-                    <a className="nav-link" href="#">Add Vehicle</a>
+                    <Link className="nav-link" to='/add-vehicle'>Add Vehicle</Link>
                     </li>
                     <li className="nav-item">
-                    <a className="nav-link" href="#">Add User</a>
+                    <Link className="nav-link" to='/add-user'>Add User</Link>
                     </li>
                     <li className="nav-item">
-                    <a className="nav-link" href="#">View Profile</a>
+                    <Link className="nav-link" to='/edit-profile'>View Profile</Link>
                     </li>
                 </ul>
                 <span className="navbar-text">

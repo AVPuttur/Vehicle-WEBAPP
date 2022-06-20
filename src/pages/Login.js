@@ -8,6 +8,8 @@ const Login = () => {
 	const [email, setEmail] = useState('');
 	const [password, setPassword] = useState('');
 
+	const URL = "https://deep-radios-live-102-113-230-160.loca.lt/api/user/login"
+
 	const authenticateUser = event => {
 		console.log("Submit clicked");
 		console.log("email 👉️", email);
@@ -17,7 +19,7 @@ const Login = () => {
 		"username": email,
 		"password": password
 		};
-		axios.post('https://shaky-wolves-clap-102-112-2-52.loca.lt/api/user/login', user)
+		axios.post(URL, user)
 			.then(response => {
 				if(response.status == 200) {
 					localStorage.setItem("username", response.data.username);

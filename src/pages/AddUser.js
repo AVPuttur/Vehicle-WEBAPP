@@ -1,5 +1,5 @@
 import React, {useEffect, useState} from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 import '../css/register.css';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faSquareParking } from '@fortawesome/free-solid-svg-icons'
@@ -8,6 +8,12 @@ import axios from 'axios';
 const AddUser = () => {
 
   const navigate = useNavigate();
+
+  const UURL = "https://angry-guests-call-102-113-230-160.loca.lt/api/user";
+
+  useEffect(() => {
+    authenticateCheck();
+  }, []);
 
   const [uname, setUname] = useState('');
   const [fname, setFname] = useState('');
@@ -18,6 +24,13 @@ const AddUser = () => {
   const [gender, setGender] = useState('');
   const [phone, setPhone] = useState('');
   const [nic, setNic] = useState('');
+
+  const authenticateCheck = () => {
+    const token = localStorage.getItem("accessToken");
+    if(token == null) {
+      navigate("/login");
+    }
+  }  
 
   const registerUser = (event) => {
     event.preventDefault();
@@ -31,7 +44,7 @@ const AddUser = () => {
     "image": profile,
     "code": ""
     };
-    axios.post('https://shaky-wolves-clap-102-112-2-52.loca.lt/api/user', user)
+    axios.post(UURL, user)
         .then(response => (response.status))
         .catch(error => {
             this.setState({ errorMessage: error.message });
@@ -49,10 +62,10 @@ const AddUser = () => {
   	<label htmlFor="menu-icon"></label>
   	<nav className="nav"> 		
   		<ul className="pt-5">
-  			<li><a href="#">Home</a></li>
-  			<li><a href="#">Add Vehicle</a></li>
-  			<li><a href="#">My Profile</a></li>
-        <li><a href="#">Logout</a></li>
+  			<li><Link to="/home">Home</Link></li>
+  			<li><Link to="/add-vehicle">Add Vehicle</Link></li>
+  			<li><Link to="/edit-profile">My Profile</Link></li>
+        <li><Link to="/login">Logout</Link></li>
   		</ul>
   	</nav>
 

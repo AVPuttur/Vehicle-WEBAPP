@@ -5,11 +5,13 @@ import { faSquareParking } from '@fortawesome/free-solid-svg-icons'
 import { useNavigate, Link } from "react-router-dom";
 import axios from 'axios';
 
-const AddVehicle = () => {
+const EditVehicle = () => {
   const navigate = useNavigate();
 
+  const VURL = "https://angry-guests-call-102-113-230-160.loca.lt/api/vehicle";
+
   useEffect(() => {
-    //authenticateCheck();
+    authenticateCheck();
   }, []);
 
   const authenticateCheck = () => {
@@ -42,7 +44,7 @@ const AddVehicle = () => {
       "time_in": timein,
       "time_out": timeout
       };
-      axios.post('https://angry-guests-call-102-113-230-160.loca.lt/api/vehicle', vehicle)
+      axios.post(VURL, vehicle)
           .then(response => (response.status))
           .catch(error => {
               this.setState({ errorMessage: error.message });
@@ -109,4 +111,4 @@ const AddVehicle = () => {
 </div>
 }
 
-export default AddVehicle;
+export default EditVehicle;

@@ -2,6 +2,7 @@
   "name": "vehicle-wapp",
   "version": "0.1.0",
   "private": true,
+  "proxy": "https://deep-radios-live-102-113-230-160.loca.lt/",
   "dependencies": {
     "@fortawesome/free-regular-svg-icons": "^6.1.1",
     "@fortawesome/free-solid-svg-icons": "^6.1.1",

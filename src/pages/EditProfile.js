@@ -2,8 +2,22 @@ import React, {useEffect} from "react";
 import '../css/register.css';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faSquareParking } from '@fortawesome/free-solid-svg-icons'
+import { useNavigate, Link } from "react-router-dom";
 
 const EditProfile = () => {
+
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    authenticateCheck();
+  }, []);
+
+  const authenticateCheck = () => {
+    const token = localStorage.getItem("accessToken");
+    if(token == null) {
+      navigate("/login");
+    }
+  }  
 
     return <div className="register">
      <a href="https://front.codes/" className="logo" target="_blank">
@@ -13,10 +27,10 @@ const EditProfile = () => {
   	<label htmlFor="menu-icon"></label>
   	<nav className="nav"> 		
   		<ul className="pt-5">
-  			<li><a href="#">Home</a></li>
-  			<li><a href="#">Add Vehicle</a></li>
-  			<li><a href="#">Add User</a></li>
-        <li><a href="#">Logout</a></li>
+  			<li><Link to="/home">Home</Link></li>
+  			<li><Link to="/add-vehicle">Add Vehicle</Link></li>
+  			<li><Link to="/add-user">Add User</Link></li>
+        <li><Link to="/login">Logout</Link></li>
   		</ul>
   	</nav>
 
