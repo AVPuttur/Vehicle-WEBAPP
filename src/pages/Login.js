@@ -8,7 +8,7 @@ const Login = () => {
 	const [email, setEmail] = useState('');
 	const [password, setPassword] = useState('');
 
-	const URL = "https://deep-radios-live-102-113-230-160.loca.lt/api/user/login"
+	const URL = "http://localhost:6900/api/user/login"
 
 	const authenticateUser = event => {
 		console.log("Submit clicked");

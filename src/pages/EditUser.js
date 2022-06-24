@@ -9,23 +9,23 @@ import { useNavigate, Link } from "react-router-dom";
 const EditUser = () => {
     const navigate = useNavigate();
 
-    const UURL = "https://angry-guests-call-102-113-230-160.loca.lt/api/user/";
+    const UURL = "http://localhost:6900/api/user/";
 
     const [users, setUsers] = useState([]);
     const [uname, setUname] = useState('');
     const [password, setPassword] = useState('');
     const [email, setEmail] = useState('');
-    const [profile, setProfile] = useState('');
-    const [gender, setGender] = useState('');
     const [phone, setPhone] = useState('');
     const [nic, setNic] = useState('');
 
     useEffect(() => {
-        getUsers();
+       // getUsers();
+       test();
+       test1();
       }, []);
-    
+
       const authenticateCheck = () => {
-        const token = localStorage.getItem("accessToken");
+        const token = localStorage.getItem("access-token");
         if(token == null) {
           navigate("/login");
         }
@@ -33,32 +33,63 @@ const EditUser = () => {
 
       const getUsers = () => {
         let username = localStorage.getItem("uname");
-        console.log(username);
+        //console.log(username);
         axios.get(UURL+username)
           .then(response => {
             if(response.status == 200) {
                 setUsers(response.data);
+                console.log(response.data)
+            
+                if (users.length > 0) {
+                  for(let i = 0; i < users.length; i++) {
+                    console.log("FDF")
+                      console.log("UN", users[i].username);
+                      setUname(users[i].username);
+                      setPassword(users[i].password);
+                      setEmail(users[i].email);
+                      setPhone(users[i].phone);
+                      setNic(users[i].nic);
+                    }
+              }
             }
           })
           .catch(error => {
               console.error('There was an error!', error);
           });
-        if (users.length > 0) {
-            for(let i = 0; i < users.length; i++) {
-                console.log("UN", users[i].username);
-                setUname(users[i].username);
-                setPassword(users[i].password);
-                setEmail(users[i].email);
-                setProfile(users[i].image);
-                setPhone(users[i].phone);
-                setNic(users[i].nic);
-              }
+    }
+
+  //this.setUname("VPALD");
+  const test = () => {
+    console.log("TREST");
+    //setUname("BH");
+    axios.get(UURL+"jeereshl")
+          .then(response => {
+            if(response.status == 200) {
+                setUsers(response.data);
+                console.log(response.data)
+            }
+          })
+          .catch(error => {
+              console.error('There was an error!', error);
+          });
+  }
+
+  const test1 = () => {
+    console.log("TRESTa");
+    console.log(users.length);
+    if (users.length > 0) {
+      for(let i = 0; i < users.length; i++) {
+          // console.log("VG", users[i].username);
+          // setUname(users[i].username);
+          // setPassword(users[i].password);
+          // setEmail(users[i].email);
+          // setPhone(users[i].phone);
+          // setNic(users[i].nic);
         }
-    }
-
-    const populateData = () => {
-
-    }
+        //setUname("DDDD");
+  }
+    
+  }
 
     const updateUser = (event) => {
         event.preventDefault();
@@ -68,7 +99,6 @@ const EditUser = () => {
         "email": email,
         "phone": phone,
         "nic": nic,
-        "image": profile,
         "code": ""
         };
         axios.put(UURL+user.username, user)
@@ -110,8 +140,6 @@ const EditUser = () => {
         <input type="text" value={uname} onChange={e => setUname(e.target.value)} name="field1" placeholder="Username *" />
         <input type="email" value={email} onChange={e => setEmail(e.target.value)} name="field4" placeholder="Your Email *" />
         <input type="password" value={password} onChange={e => setPassword(e.target.value)} name="field11" placeholder="Password *" />
-        <label htmlFor="job">Upload Image:</label>
-        <input type="text" value={profile} onChange={e => setProfile(e.target.value)} />
         </fieldset><br />
         <fieldset>
         <legend><span className="number">2</span> Additional Info</legend>     

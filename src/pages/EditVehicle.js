@@ -15,7 +15,7 @@ const EditVehicle = () => {
   }, []);
 
   const authenticateCheck = () => {
-    const token = localStorage.getItem("accessToken");
+    const token = localStorage.getItem("access-token");
     if(token == null) {
       navigate("/login");
     }

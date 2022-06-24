@@ -14,9 +14,11 @@ const Dashboard = () => {
   const navigate = useNavigate();
   const [users, setUsers] = useState([]);
   const [vehicles, setVehicles] = useState([]);
+  const [uname, setUname] = useState([]);
 
-  const VURL = "https://angry-guests-call-102-113-230-160.loca.lt/api/vehicle";
-  const UURL = "https://angry-guests-call-102-113-230-160.loca.lt/api/user";
+
+  const VURL = "http://localhost:6900/api/vehicle";
+  const UURL = "http://localhost:6900/api/user";
 
   useEffect(() => {
     authenticateCheck();
@@ -26,6 +28,8 @@ const Dashboard = () => {
 
   const userData = [];
   const vehicleData = [];
+
+  //let uName = "";
   
   const getUsers = () => {
       axios.get(UURL)
@@ -69,12 +73,28 @@ const Dashboard = () => {
     const excel = new Excel();
     excel
       .addSheet("Parking - User Data")
-      .addColumns(columns)
+      .addColumns(columnsUReport)
       .addDataSource(userData, {
         str2Percent: true
       })
       .saveAs("UserData.xlsx");
   };
+
+  const handleClickVehicle = () => {
+    const excel = new Excel();
+    excel
+      .addSheet("Parking - Vehicle Data")
+      .addColumns(columnsVReport)
+      .addDataSource(vehicleData, {
+        str2Percent: true
+      })
+      .saveAs("VehicleData.xlsx");
+  };
+
+  const logout = () => {
+    window.localStorage.clear();
+    navigate('/login');
+  }
 
   const handleDelete = (key) => {
     console.log("KEY", key);
@@ -89,17 +109,46 @@ const Dashboard = () => {
       window.location.reload();
   };
 
+  const handleDeleteVehicle = (key) => {
+    console.log("KEY", key);
+    axios.delete(VURL + key)
+      .then(response => {
+        console.log(response);
+        this.getVehicle();
+      })
+      .catch(err => {
+        console.log(err);
+      });
+      window.location.reload();
+  };
+
   const authenticateCheck = () => {
-    const token = localStorage.getItem("accessToken");
+    const token = localStorage.getItem("access-token");
     if(token == null) {
       navigate("/login");
+    }else {
+      setUname(localStorage.getItem("username"));
     }
+    //return uName;
   }
-
   const handleUpdateUser = (e) => {
     console.log(e)
     localStorage.setItem("uname", e.name);
     navigate("/edit-user");
+    /*this.setU({
+      currentId: e.id,
+      editing: true,
+      newUser: {
+        name: e.name,
+        //age: e.age
+      }
+    });*/
+  };
+
+  const handleUpdateVehicle = (e) => {
+    console.log(e)
+    localStorage.setItem("plate_no", e.plate_no);
+    navigate("/edit-vehicle");
     /*this.setU({
       currentId: e.id,
       editing: true,
@@ -256,6 +305,29 @@ const Dashboard = () => {
         },
       ];
 
+      const columnsUReport = [
+        {
+          title: 'Name',
+          dataIndex: 'name',
+          key: 'name',
+        },
+        {
+          title: 'Email',
+          dataIndex: 'mail',
+          key: 'mail',
+        },
+        {
+          title: 'Phone',
+          dataIndex: 'phone',
+          key: 'phone',
+        },
+        {
+          title: 'NIC No',
+          dataIndex: 'nic',
+          key: 'nic',
+        },
+      ];
+
       const columns1 = [
         {
           title: 'Reg_No',
@@ -301,6 +373,55 @@ const Dashboard = () => {
           dataIndex: 'timeout',
           key: 'timeout',
           ...getColumnSearchProps('timeout'),
+        },
+        {
+          title: 'operation',
+          dataIndex: 'operation',
+          render: (_, record) =>
+            vehicleData.length >= 1 ? (
+              <span>
+              <Popconfirm title="Sure to delete?" onConfirm={() => handleDeleteVehicle(record.name)}>
+              <a>Delete</a>
+              </Popconfirm> &nbsp;
+              |&nbsp;&nbsp;
+              <Popconfirm title="Sure to edit?" onConfirm={() => handleUpdateVehicle(record)}>
+              <a>Edit</a>
+              </Popconfirm>
+              </span>
+            ) : null,
+        },
+      ];
+
+      const columnsVReport = [
+        {
+          title: 'Reg_No',
+          dataIndex: 'plate_no',
+          key: 'plate_no'
+        },
+        {
+          title: 'Make',
+          dataIndex: 'brand',
+          key: 'brand'
+        },
+        {
+          title: 'Owner',
+          dataIndex: 'owner',
+          key: 'owner'        
+        },
+        {
+          title: 'Phone',
+          dataIndex: 'phone',
+          key: 'phone'
+        },
+        {
+          title: 'Time In',
+          dataIndex: 'timein',
+          key: 'timein'
+        },
+        {
+          title: 'Time Out',
+          dataIndex: 'timeout',
+          key: 'timeout'
         }
       ];
 
@@ -324,7 +445,7 @@ const Dashboard = () => {
                     </li>
                 </ul>
                 <span className="navbar-text">
-                <a className="nav-link" href="#">Logout</a>
+                <a className="nav-link" onClick={logout} href="#">Logout</a>
                 </span>
                 </div>
             </div>
@@ -348,7 +469,7 @@ const Dashboard = () => {
             <div className="row">
                 <div className="col-lg-12">
                 <div className="alert alert-success" role="alert">
-                    Welcome Varun Puttur!
+                    Welcome {uname}!
                 </div>
                 </div>
             </div>
@@ -361,7 +482,7 @@ const Dashboard = () => {
                     Lists of users
                 </h2>
                 <hr />
-                <button onClick={handleClick}>Export</button>
+                <button className='export-button' onClick={handleClick}>Download User Report</button>
                 <Table columns={columns} dataSource={userData} />
                 </div>
             </div>
@@ -373,6 +494,7 @@ const Dashboard = () => {
                     Lists of Vehicles
                 </h2>
                 <hr />
+                <button className='export-button' onClick={handleClickVehicle}>Download Vehicle Report</button>
                 <Table columns={columns1} dataSource={vehicleData} />
                 </div>
             </div>
