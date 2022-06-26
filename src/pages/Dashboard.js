@@ -133,7 +133,7 @@ const Dashboard = () => {
   }
   const handleUpdateUser = (e) => {
     console.log(e)
-    localStorage.setItem("uname", e.name);
+    localStorage.setItem("plate-no", e.plate_no);
     navigate("/edit-user");
     /*this.setU({
       currentId: e.id,
@@ -146,7 +146,7 @@ const Dashboard = () => {
   };
 
   const handleUpdateVehicle = (e) => {
-    console.log(e)
+    console.log(e.plate_no);
     localStorage.setItem("plate_no", e.plate_no);
     navigate("/edit-vehicle");
     /*this.setU({

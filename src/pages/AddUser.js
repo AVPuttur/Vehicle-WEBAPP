@@ -38,11 +38,11 @@ const AddUser = () => {
     "username": uname,
     "password": password,
     "email": email,
-    "role": "normal",
+    "role": "Normal User",
     "phone": phone,
     "nic": nic,
     "image": profile,
-    "code": ""
+    "code": fname+"-"+lname
     };
     axios.post(UURL, user)
         .then(response => (response.status))

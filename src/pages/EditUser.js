@@ -19,9 +19,7 @@ const EditUser = () => {
     const [nic, setNic] = useState('');
 
     useEffect(() => {
-       // getUsers();
-       test();
-       test1();
+       getUsers();
       }, []);
 
       const authenticateCheck = () => {
@@ -34,74 +32,61 @@ const EditUser = () => {
       const getUsers = () => {
         let username = localStorage.getItem("uname");
         //console.log(username);
+       // let uname = "";
         axios.get(UURL+username)
           .then(response => {
             if(response.status == 200) {
                 setUsers(response.data);
-                console.log(response.data)
-            
-                if (users.length > 0) {
-                  for(let i = 0; i < users.length; i++) {
-                    console.log("FDF")
-                      console.log("UN", users[i].username);
-                      setUname(users[i].username);
-                      setPassword(users[i].password);
-                      setEmail(users[i].email);
-                      setPhone(users[i].phone);
-                      setNic(users[i].nic);
-                    }
-              }
+                console.log(response.data);
             }
+            
           })
           .catch(error => {
               console.error('There was an error!', error);
           });
     }
 
-  //this.setUname("VPALD");
-  const test = () => {
-    console.log("TREST");
-    //setUname("BH");
-    axios.get(UURL+"jeereshl")
-          .then(response => {
-            if(response.status == 200) {
-                setUsers(response.data);
-                console.log(response.data)
-            }
-          })
-          .catch(error => {
-              console.error('There was an error!', error);
-          });
-  }
-
-  const test1 = () => {
-    console.log("TRESTa");
-    console.log(users.length);
-    if (users.length > 0) {
-      for(let i = 0; i < users.length; i++) {
-          // console.log("VG", users[i].username);
-          // setUname(users[i].username);
-          // setPassword(users[i].password);
-          // setEmail(users[i].email);
-          // setPhone(users[i].phone);
-          // setNic(users[i].nic);
-        }
-        //setUname("DDDD");
-  }
-    
-  }
-
     const updateUser = (event) => {
+      let username = localStorage.getItem("uname");
+      let uname1 ="", pass1 ="", email1="", phone1="", nic1="";
+      console.log(password);
+      if(uname == "") {
+        uname1 = users[0].username;
+      }else {
+        uname1 = uname
+      }
+      if(password == "") {
+        pass1 = users[0].password;
+      }else {
+        pass1 = password;
+      }
+      if(email == "") {
+        email1 = users[0].email;
+      }else {
+        email1 = email;
+      }
+      if(phone == ""){
+        phone1 = users[0].phone;
+      }else {
+        phone1 = phone;
+      }
+      if(nic == ""){
+        nic1 = users[0].nic;
+      }else {
+        nic1 = nic;
+      }
+        //console.log(users[0].password)
         event.preventDefault();
         const user = { 
-        "username": uname,
-        "password": password,
-        "email": email,
-        "phone": phone,
-        "nic": nic,
+        "username": uname1,
+        "password": pass1,
+        "email": email1,
+        "phone": phone1,
+        "nic": nic1,
         "code": ""
         };
-        axios.put(UURL+user.username, user)
+        console.log(user);
+        axios.put(UURL+username, user)
             .then(response => (response.status))
             .catch(error => {
                 //this.setState({ errorMessage: error.message });
@@ -115,7 +100,7 @@ const EditUser = () => {
     
 
     // console.log(users.length);
-
+    if(users.length > 0) {
     return <div className="register">
      <a href="https://front.codes/" className="logo" target="_blank">
 	</a>
@@ -133,25 +118,31 @@ const EditUser = () => {
   	</div>
     <h1>Edit User</h1>
     <hr />
-    <div className="form-style-5">
+    {users.map((post) => {
+return (
+    <div className="form-style-5" key={post.id}>
+          
         <form onSubmit={updateUser} >
         <fieldset>
         <legend><span className="number">1</span> Candidate Info</legend>
-        <input type="text" value={uname} onChange={e => setUname(e.target.value)} name="field1" placeholder="Username *" />
-        <input type="email" value={email} onChange={e => setEmail(e.target.value)} name="field4" placeholder="Your Email *" />
-        <input type="password" value={password} onChange={e => setPassword(e.target.value)} name="field11" placeholder="Password *" />
+        <input readOnly type="text" defaultValue={post.username} onChange={e => setUname(e.target.value)} name="field1" placeholder="Username *" />
+        <input type="email" defaultValue={post.email} onChange={e => setEmail(e.target.value)} name="field4" placeholder="Your Email *" />
+        <input type="password" defaultValue={post.password} onChange={e => setPassword(e.target.value)} name="field11" placeholder="Password *" />
         </fieldset><br />
         <fieldset>
         <legend><span className="number">2</span> Additional Info</legend>     
-        <input type="number" value={phone} onChange={e => setPhone(e.target.value)}name="field6" placeholder="Phone No *" />
-        <input type="text" value={nic} onChange={e => setNic(e.target.value)} name="field7" placeholder="NIC No *" />
+        <input type="number" defaultValue={post.phone} onChange={e => setPhone(e.target.value)} name="field6" placeholder="Phone No *" />
+        <input type="text" defaultValue={post.nic} onChange={e => setNic(e.target.value)} name="field7" placeholder="NIC No *" />
         </fieldset>
         <input type="submit" value="Apply" />
         </form>
         
         </div>
+             )
+            })}
         
-</div>
+</div> 
+    }
 
 }
 

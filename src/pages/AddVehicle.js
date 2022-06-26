@@ -8,6 +8,8 @@ import axios from 'axios';
 const AddVehicle = () => {
   const navigate = useNavigate();
 
+  const URLVEHICLE = "http://localhost:6900/api/vehicle/";
+
   useEffect(() => {
     //authenticateCheck();
   }, []);
@@ -42,7 +44,7 @@ const AddVehicle = () => {
       "time_in": timein,
       "time_out": timeout
       };
-      axios.post('https://angry-guests-call-102-113-230-160.loca.lt/api/vehicle', vehicle)
+      axios.post(URLVEHICLE, vehicle)
           .then(response => (response.status))
           .catch(error => {
               this.setState({ errorMessage: error.message });

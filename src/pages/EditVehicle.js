@@ -8,10 +8,14 @@ import axios from 'axios';
 const EditVehicle = () => {
   const navigate = useNavigate();
 
-  const VURL = "https://angry-guests-call-102-113-230-160.loca.lt/api/vehicle";
+  const VURL = "http://localhost:6900/api/vehicle/";
+
+  const [vehicles, setVehicles] = useState([]);
+
 
   useEffect(() => {
     authenticateCheck();
+    getVehicles();
   }, []);
 
   const authenticateCheck = () => {
@@ -19,7 +23,24 @@ const EditVehicle = () => {
     if(token == null) {
       navigate("/login");
     }
-  }  
+  }
+  
+  const getVehicles = () => {
+    let plateno = localStorage.getItem("plate_no");
+    console.log(plateno);
+   // let uname = "";
+    axios.get(VURL+plateno)
+      .then(response => {
+        if(response.status == 200) {
+          setVehicles(response.data);
+            console.log(response.data);
+        }
+        
+      })
+      .catch(error => {
+          console.error('There was an error!', error);
+      });
+}
 
   const [plateno, setPlateno] = useState('');
   const [oname, setOname] = useState('');
@@ -31,8 +52,9 @@ const EditVehicle = () => {
   const [colour, setColour] = useState('');
   const [brand, setBrand] = useState('');
 
-  const registerVehicle = (event) => {
+  const updateVehicle = (event) => {
     event.preventDefault();
+    let plateno = localStorage.getItem("plate_no");
     const vehicle = { 
       "plate_no": plateno,
       "owner": oname,
@@ -44,7 +66,7 @@ const EditVehicle = () => {
       "time_in": timein,
       "time_out": timeout
       };
-      axios.post(VURL, vehicle)
+      axios.put(VURL+plateno, vehicle)
           .then(response => (response.status))
           .catch(error => {
               this.setState({ errorMessage: error.message });
@@ -72,15 +94,17 @@ const EditVehicle = () => {
      </div>
    <h1>Add vehicle</h1>
    <hr />
-   <div className="form-style-5">
-       <form onSubmit={registerVehicle}>
+   {vehicles.map((post) => {
+return (
+   <div className="form-style-5" key={post.id}>
+       <form onSubmit={updateVehicle}>
        <fieldset>
        <legend><span className="number">1</span> Vehicle Info</legend>
-       <input type="text" value={plateno} onChange={e => setPlateno(e.target.value)} name="field1" placeholder="Plate No *" />
-       <input type="text" value={oname} onChange={e => setOname(e.target.value)} name="field2" placeholder="Owner Name *" />
-       <input type="email" value={email} onChange={e => setEmail(e.target.value)} name="field3" placeholder="Owner Email *" />
+       <input readOnly type="text" defaultValue={post.plate_no} onChange={e => setPlateno(e.target.value)} name="field1" placeholder="Plate No *" />
+       <input type="text" defaultValue={post.owner} onChange={e => setOname(e.target.value)} name="field2" placeholder="Owner Name *" />
+       <input type="email" defaultValue={post.email} onChange={e => setEmail(e.target.value)} name="field3" placeholder="Owner Email *" />
        <label htmlFor="job">Vehicle Type:</label>
-       <select value={vtype} onChange={e => setVtype(e.target.value)} id="job" name="field4">
+       <select defaultValue={post.type} onChange={e => setVtype(e.target.value)} id="job" name="field4">
        <optgroup label="V type">
          <option value="SUV">SUV</option>
          <option value="4 x 4">4 x 4</option>
@@ -94,20 +118,21 @@ const EditVehicle = () => {
        </optgroup>
        </select> 
        <label htmlFor="ti">Time In:</label>
-       <input type="time" value={timein} onChange={e => setTimein(e.target.value)} name="field9" placeholder="Time In" />
+       <input type="time" defaultValue={post.time_in} onChange={e => setTimein(e.target.value)} name="field9" placeholder="Time In" />
        <label htmlFor="to">Time Out:</label>
-       <input type="time" value={timeout} onChange={e => setTimeout(e.target.value)} name="field10" placeholder="Time Out" />     
+       <input type="time" defaultValue={post.time_out} onChange={e => setTimeout(e.target.value)} name="field10" placeholder="Time Out" />     
        </fieldset>
        <fieldset>
        <legend><span className="number">2</span> Additional Info</legend>
-       <input type="text" value={brand} onChange={e => setBrand(e.target.value)} name="field5" placeholder="Car Brand" />
-       <input type="number" value={phone} onChange={e => setPhone(e.target.value)} name="field6" placeholder="Phone No *" />
-       <input type="text" value={colour} onChange={e => setColour(e.target.value)} name="field7" placeholder="Colour" />
+       <input type="text" defaultValue={post.nic} onChange={e => setBrand(e.target.value)} name="field5" placeholder="Car Brand" />
+       <input type="number" defaultValue={post.phone} onChange={e => setPhone(e.target.value)} name="field6" placeholder="Phone No *" />
+       <input type="text" defaultValue={post.colour} onChange={e => setColour(e.target.value)} name="field7" placeholder="Colour" />
        </fieldset>
        <input type="submit" value="Apply" />
        </form>
        </div>
-       
+     )
+    })}
 </div>
 }
 
