@@ -39,8 +39,8 @@ const EditProfile = () => {
   }
 
   const getUsers = () => {
-    let username = localStorage.getItem("uname");
-    //console.log(username);
+    let username = localStorage.getItem("username");
+    console.log(username);
    // let uname = "";
     axios.get(UURL+username)
       .then(response => {

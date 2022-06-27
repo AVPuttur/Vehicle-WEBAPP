@@ -110,8 +110,8 @@ const Dashboard = () => {
   };
 
   const handleDeleteVehicle = (key) => {
-    console.log("KEY", key);
-    axios.delete(VURL + key)
+    console.log("KEY", key.plate_no);
+    axios.delete(VURL +"/"+key.plate_no)
       .then(response => {
         console.log(response);
         this.getVehicle();
@@ -380,7 +380,7 @@ const Dashboard = () => {
           render: (_, record) =>
             vehicleData.length >= 1 ? (
               <span>
-              <Popconfirm title="Sure to delete?" onConfirm={() => handleDeleteVehicle(record.name)}>
+              <Popconfirm title="Sure to delete?" onConfirm={() => handleDeleteVehicle(record)}>
               <a>Delete</a>
               </Popconfirm> &nbsp;
               |&nbsp;&nbsp;
