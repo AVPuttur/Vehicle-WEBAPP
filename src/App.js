@@ -7,6 +7,7 @@ import Dashboard from './pages/Dashboard'
 import EditProfile from './pages/EditProfile'
 import EditUser from './pages/EditUser'
 import EditVehicle from './pages/EditVehicle'
+import Monitor from './pages/Monitor'
 
 const App = () => {
   return <div>
@@ -20,6 +21,8 @@ const App = () => {
         <Route path="/edit-profile" element={<EditProfile/>}/>
         <Route path="/edit-user" element={<EditUser/>}/>
         <Route path="/edit-vehicle" element={<EditVehicle/>}/>
+        <Route path="/monitor" element={<Monitor/>}/>
+
       </Routes>
     </BrowserRouter>
   </div>

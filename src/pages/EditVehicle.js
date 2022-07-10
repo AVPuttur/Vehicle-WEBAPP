@@ -53,18 +53,59 @@ const EditVehicle = () => {
   const [brand, setBrand] = useState('');
 
   const updateVehicle = (event) => {
-    event.preventDefault();
     let plateno = localStorage.getItem("plate_no");
+    let oname1 = "", vtype1 ="", email1 ="", timein1 ="", timeout1 ="", phone1 ="", colour1="", brand1 ="";
+    if(oname == "") {
+      oname1 = vehicles[0].owner;
+    }else {
+      oname1 = oname
+    }
+    if(vtype == ""){
+      vtype1 = vehicles[0].type;
+    }else{
+      vtype1 = vtype;
+    }
+    if(email == ""){
+      email1 = vehicles[0].email;
+    }else{
+      email1 = email;
+    }
+    if(timein == ""){
+      timein1 = vehicles[0].time_in;
+    }else{
+      timein1 = timein;
+    }
+    if(timeout == ""){
+      timeout1 = vehicles[0].time_out;
+    }else{
+      timeout1 = timeout;
+    }
+    if(phone == ""){
+      phone1 = vehicles[0].phone;
+    }else{
+      phone1 = phone;
+    }
+    if(colour == ""){
+      colour1 = vehicles[0].colour;
+    }else{
+      colour1 = colour;
+    }
+    if(brand == ""){
+      brand1 = vehicles[0].nic;
+    }else{
+      brand1 = brand;
+    }
+    event.preventDefault();
     const vehicle = { 
       "plate_no": plateno,
-      "owner": oname,
-      "email": email,
-      "nic": brand,
-      "type": vtype,
-      "phone": phone,
-      "colour": colour,
-      "time_in": timein,
-      "time_out": timeout
+      "owner": oname1,
+      "email": email1,
+      "nic": brand1,
+      "type": vtype1,
+      "phone": phone1,
+      "colour": colour1,
+      "time_in": timein1,
+      "time_out": timeout1
       };
       axios.put(VURL+plateno, vehicle)
           .then(response => (response.status))
@@ -72,6 +113,7 @@ const EditVehicle = () => {
               this.setState({ errorMessage: error.message });
               console.error('There was an error!', error);
           });
+          localStorage.removeItem('plate_no');
           navigate("/home");
   };
 

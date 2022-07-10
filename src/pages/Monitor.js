@@ -11,13 +11,12 @@ import { Modal } from "react-bootstrap";
 import axios from 'axios';
 import { useNavigate, Link } from "react-router-dom";
 
-const Dashboard = () => {
+const Monitor = () => {
   const navigate = useNavigate();
   const [users, setUsers] = useState([]);
   const [vehicles, setVehicles] = useState([]);
   const [uname, setUname] = useState([]);
   const [show, setShow] = useState(false);
-  const [show1, setShow1] = useState(false);
   const [plateno, setPlateno] = useState('');
 
 
@@ -36,10 +35,7 @@ const Dashboard = () => {
  
 
   const handleClose = () => setShow(false);
-  const handleClose1 = () => setShow1(false);
   const handleShow = () => setShow(true);
-  const handleShow1 = () => setShow1(true);
-
 
 
   //let uName = "";
@@ -71,15 +67,17 @@ const Dashboard = () => {
   }
 
   for(let i = 0; i < vehicles.length; i++) {
-    vehicleData.push({
-      key: vehicles[i].id,
-      plate_no: vehicles[i].plate_no,
-      brand: vehicles[i].nic,
-      phone: vehicles[i].phone,
-      owner: vehicles[i].owner,
-      timein: vehicles[i].time_in,
-      timeout: vehicles[i].time_out,
-    });
+    if(vehicles[i].time_out == "") {
+        vehicleData.push({
+            key: vehicles[i].id,
+            plate_no: vehicles[i].plate_no,
+            brand: vehicles[i].nic,
+            phone: vehicles[i].phone,
+            owner: vehicles[i].owner,
+            timein: vehicles[i].time_in,
+            timeout: vehicles[i].time_out,
+          });
+    }
   }
 
   const handleClick = () => {
@@ -141,56 +139,9 @@ const Dashboard = () => {
       navigate("/login");
     }else {
       setUname(localStorage.getItem("username"));
-      localStorage.removeItem('plate_no');
     }
     //return uName;
   }
-
-  const searchVehicle = () => {
-    console.log("PLATE:- ", plateno);
-    if(plateno == "") {
-      navigate("/add-vehicle");
-
-    }else {
-      axios.get(VURL +"/"+plateno)
-      .then(response => {
-        console.log(response.data);
-        if(response.data != "") {
-          localStorage.setItem("plate_no", plateno);
-          navigate("/edit-vehicle");
-        }else {
-          navigate("/add-vehicle");
-        }
-        //this.getVehicle();
-      })
-      .catch(err => {
-        console.log(err);
-      });
-    }
-
-    //return uName;
-  }
-
-  const searchVehicleExit = () => {
-    console.log("PLATE:- ", plateno);
-    axios.get(VURL +"/"+plateno)
-      .then(response => {
-        console.log(response.data);
-        if(response.data != "") {
-          localStorage.setItem("plate_no", plateno);
-          navigate("/edit-vehicle");
-        }else {
-          alert("Vehicle not found.")
-        }
-        //this.getVehicle();
-      })
-      .catch(err => {
-        console.log(err);
-      });
-    //return uName;
-  }
-
-
   const handleUpdateUser = (e) => {
     console.log(e)
     localStorage.setItem("plate-no", e.plate_no);
@@ -495,19 +446,7 @@ const Dashboard = () => {
                 <div className="collapse navbar-collapse" id="navbarText">
                 <ul className="navbar-nav me-auto mb-2 mb-lg-0">
                     <li className="nav-item">
-                      <a className="nav-link"  onClick={handleShow}>Add Vehicle</a>
-                    </li>
-                    <li className="nav-item">
-                    <Link className="nav-link" to='/add-user'>Add User</Link>
-                    </li>
-                    <li className="nav-item">
-                    <Link className="nav-link" to='/edit-profile'>View Profile</Link>
-                    </li>
-                    <li className="nav-item">
-                    <a className="nav-link"  onClick={handleShow1}>Vehicle Exit</a>
-                    </li>
-                    <li className="nav-item">
-                    <Link className="nav-link" to='/monitor'>Monitor</Link>
+                    <Link className="nav-link" to='/home'>Home</Link>
                     </li>
                 </ul>
                 <span className="navbar-text">
@@ -545,7 +484,7 @@ const Dashboard = () => {
             <div className="row">
                 <div className="col-lg-12">
                 <h2>
-                    Lists of users
+                    Lists of all users
                 </h2>
                 <hr />
                 <button className='export-button' onClick={handleClick}>Download User Report</button>
@@ -557,7 +496,7 @@ const Dashboard = () => {
             <div className="row">
                 <div className="col-lg-12">
                 <h2>
-                    Lists of Vehicles
+                    Lists of Vehicles - In Parking
                 </h2>
                 <hr />
                 <button className='export-button' onClick={handleClickVehicle}>Download Vehicle Report</button>
@@ -567,28 +506,14 @@ const Dashboard = () => {
         </div>
       <Modal show={show} onHide={handleClose}>
         <Modal.Header closeButton>
-          <Modal.Title>Search Vehicle</Modal.Title>
+          <Modal.Title>Modal heading</Modal.Title>
         </Modal.Header>
         <Modal.Body><label>Enter Vehicle No</label>&nbsp;&nbsp;<input type="text" value={plateno} onChange={e => setPlateno(e.target.value)} name="field1" placeholder="Plate No *" /></Modal.Body>
         <Modal.Footer>
           <Button variant="danger" onClick={handleClose}>
             Close
           </Button>
-          <Button variant="success" onClick={searchVehicle}>
-            Search
-          </Button>
-        </Modal.Footer>
-      </Modal>
-      <Modal show={show1} onHide={handleClose1}>
-        <Modal.Header closeButton>
-          <Modal.Title>Search Vehicle - Exit Vehicle</Modal.Title>
-        </Modal.Header>
-        <Modal.Body><label>Enter Vehicle No</label>&nbsp;&nbsp;<input type="text" value={plateno} onChange={e => setPlateno(e.target.value)} name="field1" placeholder="Plate No *" /></Modal.Body>
-        <Modal.Footer>
-          <Button variant="danger" onClick={handleClose1}>
-            Close
-          </Button>
-          <Button variant="success" onClick={searchVehicleExit}>
+          <Button variant="primary" onClick={handleClose}>
             Search
           </Button>
         </Modal.Footer>
@@ -597,4 +522,4 @@ const Dashboard = () => {
 
 }
 
-export default Dashboard;
+export default Monitor;
